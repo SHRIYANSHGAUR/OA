@@ -1,0 +1,56 @@
+Solution Of Second Problem:
+
+#include<bits/stdc++.h>
+using namespace std;
+
+void solve(int i, int j, vector<vector<char>>& grid, map<pair<pair<int, int>, char>, int>& m, vector<vector<int>>& f, char x) {
+    f[i][j]++;
+    if (m.count({{i, j}, x})) return;
+
+    if (x == 'R') {
+        if (j + 1 >= grid[i].size() || grid[i][j + 1] == 'X') {
+            m[{{i, j}, 'R'}] = 1;
+            solve(i, j, grid, m, f, 'D');
+        } else solve(i, j + 1, grid, m, f, 'R');
+    }
+    else if (x == 'D') {
+        if (i + 1 >= grid.size() || grid[i + 1][j] == 'X') {
+            m[{{i, j}, 'D'}] = 1;
+            solve(i, j, grid, m, f, 'L');
+        } else solve(i + 1, j, grid, m, f, 'D');
+    }
+    else if (x == 'L') {
+        if (j - 1 < 0 || grid[i][j - 1] == 'X') {
+            m[{{i, j}, 'L'}] = 1;
+            solve(i, j, grid, m, f, 'U');
+        } else solve(i, j - 1, grid, m, f, 'L');
+    }
+    else if (x == 'U') {
+        if (i - 1 < 0 || grid[i - 1][j] == 'X') {
+            m[{{i, j}, 'U'}] = 1;
+            solve(i, j, grid, m, f, 'R');
+        } else solve(i - 1, j, grid, m, f, 'U');
+    }
+}
+
+int main() {
+    vector<string> v = {"....X..", "X......", ".....X.", "......."};
+    vector<vector<char>> grid(v.size(), vector<char>(v[0].size()));
+    vector<vector<int>> f(v.size(), vector<int>(v[0].size(), 0));
+    
+    for (int i = 0; i < v.size(); i++)
+        for (int j = 0; j < v[i].size(); j++)
+            grid[i][j] = v[i][j];
+    
+    map<pair<pair<int, int>, char>, int> m;
+    solve(0, 0, grid, m, f, 'R');
+    
+    int ans = 0;
+    for (int i = 0; i < f.size(); i++) {
+        for (int j = 0; j < f[i].size(); j++) {
+            ans += f[i][j] > 0;
+        }
+    }
+    cout << "Total visited cells: " << ans << endl;
+    return 0;
+}
